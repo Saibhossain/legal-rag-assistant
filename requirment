@@ -1,0 +1,6 @@
+llama-index>=0.10.0
+faiss-cpu
+sentence-transformers
+fastapi
+uvicorn
+unstructured
