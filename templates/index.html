@@ -1,41 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>End-to-End RAG Chat</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Document Assistant ChatBot</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>RAG Document Assistant</h1>
-        </header>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-robot"></i>
+            <span>AI Document Assistant Pro</span>
+        </div>
+        <ul class="navbar-menu">
+            <li onclick="toggleTheme()"><i class="fas fa-palette"></i> Themes</li>
+            <li onclick="showHelp()"><i class="fas fa-question-circle"></i> Help</li>
+            <li onclick="showSettings()"><i class="fas fa-cog"></i> Settings</li>
+        </ul>
+        <div class="user-profile" onclick="showProfile()">
+            <div class="user-avatar">U</div>
+            <span>User</span>
+        </div>
+    </nav>
 
-        <section class="upload-section">
-            <h2>Upload Document</h2>
-            <input type="file" id="fileInput" accept=".pdf,.docx" />
-            <button id="uploadBtn" disabled>Upload</button>
-            <div id="uploadStatus" class="status"></div>
-        </section>
-
-        <section class="chat-section">
-            <div id="chatWindow" class="chat-window">
-                <!-- Messages will appear here -->
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Document Upload</h3>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <strong>Drop files here</strong><br>
+                        or click to browse<br>
+                        <small>PDF, DOCX supported</small>
+                    </div>
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf,.docx" multiple>
+                </div>
+                <div id="uploadStatus" class="status-text"></div>
             </div>
 
-            <form id="chatForm" autocomplete="off">
-                <input
-                    type="text"
-                    id="userInput"
-                    placeholder="Ask a question..."
-                    required
-                    autocomplete="off"
-                    disabled
-                />
-                <button type="submit" disabled>Send</button>
-            </form>
-        </section>
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Documents</h3>
+                <div class="document-list" id="documentList">
+                    <!-- Documents will be listed here -->
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Quick Settings</h3>
+                <div class="settings-panel">
+                    <div class="setting-item">
+                        <span>Dark Mode</span>
+                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                    </div>
+                    <div class="setting-item">
+                        <span>Auto-scroll</span>
+                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                    </div>
+                    <div class="setting-item">
+                        <span>Sound Effects</span>
+                        <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                    </div>
+                    <div class="setting-item">
+                        <span>Show Sources</span>
+                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Chat Container -->
+        <main class="chat-container">
+            <!-- Chat Header -->
+            <header class="chat-header">
+                <button class="action-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                </button>
+                <div class="chat-title">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat Assistant</span>
+                </div>
+                <div class="chat-actions">
+                    <button class="action-btn" onclick="clearChat()">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                    <button class="action-btn" onclick="exportChat()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+
+                </div>
+            </header>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-message" id="welcomeMessage">
+                    <div class="welcome-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h2>Welcome to AI Document Assistant Pro</h2>
+                    <p>Upload your documents and start asking questions. I'm here to help you find the information you need!</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
+                            <h4>PDF Support</h4>
+                            <p>Upload and analyze PDF documents</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-file-word"></i></div>
+                            <h4>DOCX Support</h4>
+                            <p>Process Word documents seamlessly</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-search"></i></div>
+                            <h4>Smart Search</h4>
+                            <p>Find relevant information instantly</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                            <h4>AI Analysis</h4>
+                            <p>Get intelligent insights and answers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <form class="chat-input-form" id="chatForm">
+                    <div class="input-wrapper">
+                        <textarea
+                            class="chat-input"
+                            id="chatInput"
+                            placeholder="Ask me anything about your documents..."
+                            rows="1"
+                            disabled
+                        ></textarea>
+                        <div class="input-actions">
+                            <button type="button" class="input-action-btn" onclick="attachFile()">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button type="button" class="input-action-btn" onclick="recordVoice()">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="send-btn" id="sendBtn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-left">
+                    <div class="status-indicator">
+                        <div class="status-dot" id="statusDot"></div>
+                        <span id="statusText">Ready</span>
+                    </div>
+                    <span id="documentCount">No documents uploaded</span>
+                </div>
+                <div class="status-right">
+                    <span id="responseTime"></span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <span id="notificationText"></span>
     </div>
 
     <script src="/static/main.js"></script>
