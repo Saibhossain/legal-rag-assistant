@@ -1,68 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Policy QA System</title>
-  <link rel="stylesheet" href="/static/style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>End-to-End RAG Chat</title>
+    <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <header>
-    <h1>Smart Policy QA System</h1>
-  </header>
+    <div class="container">
+        <header>
+            <h1>RAG Document Assistant</h1>
+        </header>
 
-  <div class="container">
-    <h2>Upload Policy Document</h2>
-    <form id="uploadForm">
-      <label for="file">Select PDF or DOCX file:</label>
-      <input type="file" id="file" name="file" accept=".pdf,.docx" required />
-      <button type="submit">Upload & Index</button>
-    </form>
+        <section class="upload-section">
+            <h2>Upload Document</h2>
+            <input type="file" id="fileInput" accept=".pdf,.docx" />
+            <button id="uploadBtn" disabled>Upload</button>
+            <div id="uploadStatus" class="status"></div>
+        </section>
 
-    <h2 style="margin-top: 3rem;">Ask a Question</h2>
-    <form id="queryForm">
-      <label for="query">Your Question:</label>
-      <input type="text" id="query" name="query" required />
-      <button type="submit">Get Answer</button>
-    </form>
+        <section class="chat-section">
+            <div id="chatWindow" class="chat-window">
+                <!-- Messages will appear here -->
+            </div>
 
-    <div class="output" id="output" style="display:none">
-      <h3>Answer:</h3>
-      <p id="answerText"></p>
-      <h4>Referenced Text:</h4>
-      <p id="contextText"></p>
+            <form id="chatForm" autocomplete="off">
+                <input
+                    type="text"
+                    id="userInput"
+                    placeholder="Ask a question..."
+                    required
+                    autocomplete="off"
+                    disabled
+                />
+                <button type="submit" disabled>Send</button>
+            </form>
+        </section>
     </div>
-  </div>
 
-  <script>
-    const uploadForm = document.getElementById('uploadForm');
-    const queryForm = document.getElementById('queryForm');
-    const output = document.getElementById('output');
-    const answerText = document.getElementById('answerText');
-    const contextText = document.getElementById('contextText');
-
-    uploadForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(uploadForm);
-
-      const response = await fetch('/upload/', {
-        method: 'POST',
-        body: formData
-      });
-
-      const result = await response.json();
-      alert(result.message || 'File uploaded successfully');
-    });
-
-    queryForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const query = document.getElementById('query').value;
-      const response = await fetch(`/ask/?q=${encodeURIComponent(query)}`);
-      const result = await response.json();
-      answerText.textContent = result.answer;
-      contextText.textContent = result.source;
-      output.style.display = 'block';
-    });
-  </script>
+    <script src="/static/main.js"></script>
 </body>
 </html>
