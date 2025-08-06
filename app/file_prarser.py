@@ -12,7 +12,7 @@ def parse_pdf(file_path):
                     text += content + "\n"
         return text.strip()
     except Exception as e:
-        print(f"❌ Error parsing PDF: {e}")
+        print(f" Error parsing PDF: {e}")
         return ""
 
 def parse_docx(file_path):
@@ -21,5 +21,5 @@ def parse_docx(file_path):
         doc = Document(file_path)
         return "\n".join(para.text for para in doc.paragraphs if para.text).strip()
     except Exception as e:
-        print(f"❌ Error parsing DOCX: {e}")
+        print(f" Error parsing DOCX: {e}")
         return ""

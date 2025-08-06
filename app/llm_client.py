@@ -9,10 +9,10 @@ client = Groq(api_key=api_key)
 def generate_answer(context, question):
     prompt = f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
     response = client.chat.completions.create(
-        model="llama3-8b-8192",  # ✅ Updated model
+        model="llama3-8b-8192",  #  Updated model
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
         ]
     )
-    return response.choices[0].message.content.strip()  # ✅ fixed return access
+    return response.choices[0].message.content.strip()  #  fixed return access
